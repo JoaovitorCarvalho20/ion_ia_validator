@@ -109,6 +109,7 @@ class IONIAValidator(tk.Tk):
         # Tabela
         table_frame = tk.Frame(self, bg=BG, padx=20, pady=0)
         table_frame.pack(fill="both", expand=True, pady=(0, 16))
+        self.table_frame = table_frame
 
         cols = ("rule_id", "antecedentes", "consequente", "qtd_ant", "ic")
         self.tree = ttk.Treeview(table_frame, columns=cols, show="headings",
@@ -147,6 +148,11 @@ class IONIAValidator(tk.Tk):
         self.tree.tag_configure("ic_sim", foreground=SUCCESS)
         self.tree.tag_configure("ic_nao", foreground=TEXT_MUTED)
 
+        # Linhas divisórias entre colunas
+        self._col_separators = []
+        self._sep_after_cols = ("antecedentes", "consequente", "qtd_ant")
+        self.tree.bind("<Configure>", lambda _e: self._draw_column_separators())
+
         # Rodapé
         footer = tk.Frame(self, bg=SURFACE, pady=8)
         footer.pack(fill="x", side="bottom")
@@ -172,6 +178,20 @@ class IONIAValidator(tk.Tk):
     def _update_card(self, card, value, color=None):
         card._value_lbl.config(text=str(value),
                                fg=color if color else card._color)
+
+    # ── Linhas divisórias entre colunas da tabela ───────────────────────────
+    def _draw_column_separators(self):
+        for line in self._col_separators:
+            line.destroy()
+        self._col_separators = []
+
+        x = 0
+        for cid in self.tree["columns"]:
+            x += self.tree.column(cid, "width")
+            if cid in self._sep_after_cols:
+                sep = tk.Frame(self.table_frame, bg=BORDER, width=1)
+                sep.place(in_=self.tree, x=x, y=0, relheight=1)
+                self._col_separators.append(sep)
 
     # ── Carregar base ────────────────────────────────────────────────────────
     def _load_db(self):

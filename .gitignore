@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambientes virtuais
+venv/
+env/
+.venv/
+
+# Bases de dados de clientes (não versionar dados sensíveis)
+*.db
+*.s3db
+*.sqlite
+*.sqlite3
+
+# Editor / IDE
+.vscode/
+.idea/
+.claude
+
+# SO
+.DS_Store
+Thumbs.db
